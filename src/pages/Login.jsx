@@ -10,9 +10,11 @@ export default function Login() {
     e.preventDefault()
     setLoading(true)
     const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: window.location.origin }
-    })
+        email,
+        options: {
+          emailRedirectTo: 'https://sommarsidan.netlify.app',
+        }
+      })
     if (error) alert(error.message)
     else setSent(true)
     setLoading(false)
