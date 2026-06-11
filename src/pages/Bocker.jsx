@@ -71,24 +71,34 @@ export default function Bocker() {
               cursor: 'pointer',
             }}
           >
+            {/* Omslag */}
             <div style={{
-              background: genreColor[book.genre] || '#eee',
               borderRadius: 10,
               width: 72,
               minWidth: 72,
               height: 90,
+              overflow: 'hidden',
+              background: genreColor[book.genre] || '#eee',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: 11,
-              gap: 4,
-              textAlign: 'center',
-              padding: 8,
             }}>
-              <span style={{ fontSize: 26 }}>{genreEmoji[book.genre] || '📖'}</span>
-              <span style={{ textTransform: 'uppercase', letterSpacing: 0.5, fontSize: 9, color: '#666' }}>{book.genre}</span>
+              {book.cover_url ? (
+                <img
+                  src={book.cover_url}
+                  alt={book.title}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                <>
+                  <span style={{ fontSize: 26 }}>{genreEmoji[book.genre] || '📖'}</span>
+                  <span style={{ textTransform: 'uppercase', letterSpacing: 0.5, fontSize: 9, color: '#666' }}>{book.genre}</span>
+                </>
+              )}
             </div>
+
+            {/* Info */}
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 700, fontSize: 16 }}>{book.title}</div>
               <div style={{ color: '#888', fontSize: 13, marginBottom: 6 }}>{book.author}</div>

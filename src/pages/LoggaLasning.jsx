@@ -35,27 +35,23 @@ export default function LoggaLasning() {
   ]
 
   async function handleSave() {
-    console.log('Sparar:', { selectedMember, selectedBook, minutes, pages, location })
     if (!selectedMember || !selectedBook) {
       alert('Välj vem som läser och vilken bok!')
       return
     }
     setSaving(true)
-    console.log('Sparar:', { selectedMember, selectedBook, minutes, pages, location })
-const { error } = await supabase.from('reading_logs').insert({
-  family_member_id: selectedMember,
-  book_id: selectedBook,
-  date: today,
-  minutes,
-  pages,
-  location_type: location,
-  note: note || null,
-})
+    const { error } = await supabase.from('reading_logs').insert({
+      family_member_id: selectedMember,
+      book_id: selectedBook,
+      date: today,
+      minutes,
+      pages,
+      location_type: location,
+      note: note || null,
+    })
     if (error) {
-        console.log('FEL:', error)
       alert('Något gick fel: ' + error.message)
     } else {
-      // Uppdatera familjens framsteg
       const member = members.find(m => m.id === selectedMember)
       if (member) {
         await supabase.from('family_members').update({
@@ -79,7 +75,7 @@ const { error } = await supabase.from('reading_logs').insert({
         <div style={{ fontSize: 28, fontWeight: 700, fontFamily: 'Georgia, serif' }}>
           📖 Logga läsning
         </div>
-        <div style={{ fontSize: 13, color: '#666', marginTop: 4 }}>Berätta om din lässstund</div>
+        <div style={{ fontSize: 13, color: '#666', marginTop: 4 }}>Berätta om din lässtund</div>
       </div>
 
       <div style={{ padding: '0 1rem' }}>
@@ -128,10 +124,37 @@ const { error } = await supabase.from('reading_logs').insert({
                 cursor: 'pointer',
                 border: '2px solid',
                 borderColor: selectedBook === b.id ? '#26562F' : 'transparent',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
               }}
             >
-              <div style={{ fontWeight: 600 }}>{b.title}</div>
-              <div style={{ fontSize: 12, opacity: 0.7 }}>{b.author}</div>
+              {/* Omslagsbild */}
+              <div style={{
+                width: 44,
+                minWidth: 44,
+                height: 58,
+                borderRadius: 6,
+                overflow: 'hidden',
+                background: '#eee',
+                flexShrink: 0,
+              }}>
+                {b.cover_url ? (
+                  <img
+                    src={b.cover_url}
+                    alt={b.title}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                ) : (
+                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>
+                    📖
+                  </div>
+                )}
+              </div>
+              <div>
+                <div style={{ fontWeight: 600 }}>{b.title}</div>
+                <div style={{ fontSize: 12, opacity: 0.7 }}>{b.author}</div>
+              </div>
             </div>
           ))}
         </div>
@@ -204,6 +227,7 @@ const { error } = await supabase.from('reading_logs').insert({
             resize: 'none',
             height: 100,
             outline: 'none',
+            boxSizing: 'border-box',
           }}
         />
 
