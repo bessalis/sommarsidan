@@ -2,6 +2,7 @@ import NavBar from '../components/NavBar'
 import { supabase } from '../lib/supabase'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import heroBild from '../assets/hero.png'
 
 const genreEmoji = {
   'Noveller': '✍️',
@@ -38,18 +39,36 @@ export default function Bocker() {
   return (
     <div style={{ background: '#F2ECD7', minHeight: '100vh', paddingBottom: 100 }}>
 
-      {/* Header */}
-      <div style={{
-        background: 'linear-gradient(180deg, #d4e8c2 0%, #F2ECD7 100%)',
-        padding: '2rem 1.5rem 1.5rem',
-      }}>
-        <div style={{ fontSize: 28, fontWeight: 700, fontFamily: 'Georgia, serif' }}>
-          📚 Böcker
-        </div>
-        <div style={{ fontSize: 13, color: '#666', marginTop: 4 }}>
-          {books.length} böcker i bokhyllan
-        </div>
-      </div>
+    {/* Header */}
+<div style={{
+  margin: '1rem 1rem 0',
+  borderRadius: '1.5rem',
+  overflow: 'hidden',
+  height: 140,
+  position: 'relative',
+}}>
+  <img
+    src={heroBild}
+    alt=""
+    style={{
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+      objectPosition: 'center 60%',
+      display: 'block',
+    }}
+  />
+</div>
+
+{/* Sidtitel */}
+<div style={{ padding: '1rem 1.5rem 0' }}>
+  <div style={{ fontSize: 28, fontWeight: 700, fontFamily: 'Georgia, serif' }}>
+    📚 Böcker
+  </div>
+  <div style={{ fontSize: 13, color: '#666', marginTop: 4 }}>
+    {books.length} böcker i bokhyllan
+  </div>
+</div>
 
       <div style={{ padding: '0 1rem' }}>
         <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, color: '#888', margin: '1.5rem 0 0.75rem' }}>

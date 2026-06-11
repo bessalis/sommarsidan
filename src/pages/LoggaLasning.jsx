@@ -2,6 +2,7 @@ import NavBar from '../components/NavBar'
 import { supabase } from '../lib/supabase'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import heroBild from '../assets/hero.png'
 
 export default function LoggaLasning() {
   const [members, setMembers] = useState([])
@@ -69,9 +70,26 @@ export default function LoggaLasning() {
 
       {/* Header */}
       <div style={{
-        background: 'linear-gradient(180deg, #d4e8c2 0%, #F2ECD7 100%)',
-        padding: '2rem 1.5rem 1.5rem',
+        margin: '1rem 1rem 0',
+        borderRadius: '1.5rem',
+        overflow: 'hidden',
+        height: 140,
       }}>
+        <img
+          src={heroBild}
+          alt=""
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center 60%',
+            display: 'block',
+          }}
+        />
+      </div>
+
+      {/* Sidtitel */}
+      <div style={{ padding: '1rem 1.5rem 0' }}>
         <div style={{ fontSize: 28, fontWeight: 700, fontFamily: 'Georgia, serif' }}>
           📖 Logga läsning
         </div>
@@ -129,7 +147,6 @@ export default function LoggaLasning() {
                 gap: 12,
               }}
             >
-              {/* Omslagsbild */}
               <div style={{
                 width: 44,
                 minWidth: 44,
