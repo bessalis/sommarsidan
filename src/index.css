@@ -1,0 +1,39 @@
+:root {
+  --bg: #F2ECD7;
+  --bg-card: #F8F2DF;
+  --green: #26562F;
+  --green-light: #e8f0e9;
+  --text: #1a1a1a;
+  --text-muted: #666;
+  --radius: 16px;
+  --font: 'Georgia', serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+h1, h2, h3 {
+  font-family: 'Slang, Georgia', serif;
+}
+
+p, span, input, button, label {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+@font-face {
+  font-family: 'Slang';
+  src: url('/src/assets/Slang.ttf.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
