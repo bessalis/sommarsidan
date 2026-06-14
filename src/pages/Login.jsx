@@ -13,7 +13,7 @@ export default function Login() {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: 'https://sommarsidan.netlify.app',
+        emailRedirectTo: 'https://sommarsidan.netlify.app/auth/callback',
       }
     })
     if (error) alert(error.message)

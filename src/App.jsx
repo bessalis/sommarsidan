@@ -7,6 +7,7 @@ import Bocker from './pages/Bocker'
 import LoggaLasning from './pages/LoggaLasning'
 import Badges from './pages/Badges'
 import BokDetalj from './pages/BokDetalj'
+import AuthCallback from './pages/AuthCallback'
 
 function App() {
   const [session, setSession] = useState(null)
@@ -28,6 +29,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/login" element={!session ? <Login /> : <Navigate to="/" />} />
         <Route path="/" element={session ? <Hem /> : <Navigate to="/login" />} />
         <Route path="/bocker" element={session ? <Bocker /> : <Navigate to="/login" />} />
