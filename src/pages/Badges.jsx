@@ -29,6 +29,7 @@ export default function Badges() {
 
   const grouped = badges.reduce((acc, badge) => {
     const cat = badge.category || "ovrigt"
+    if (!acc[cat]) acc[cat] = []
     acc[cat].push(badge)
     return acc
   }, {})
