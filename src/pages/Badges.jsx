@@ -5,6 +5,7 @@ import NavBar from '../components/NavBar'
 const badgeImages = import.meta.glob('../assets/badges/*.png', { eager: true })
 
 function getBadgeImage(filename) {
+  if (!filename) return null
   const key = Object.keys(badgeImages).find(k => k.endsWith(filename))
   return key ? badgeImages[key].default : null
 }
@@ -27,7 +28,7 @@ export default function Badges() {
     async function fetchData() {
       const { data: allBadges } = await supabase.from('badges').select('*').order('category')
       const { data: userBadges } = await supabase.from('user_badges').select('badge_id')
-      console.log("badges:", allBadges); if (allBadges) setBadges(allBadges)
+      if (allBadges) setBadges(allBadges)
       if (userBadges) setUnlockedIds(new Set(userBadges.map(b => b.badge_id)))
       setLoading(false)
     }
@@ -36,6 +37,7 @@ export default function Badges() {
 
   const grouped = badges.reduce((acc, badge) => {
     const cat = badge.category || 'ovrigt'
+    if (!acc[cat]) acc[cat] = []
     acc[cat].push(badge)
     return acc
   }, {})
@@ -76,6 +78,7 @@ export default function Badges() {
                           width: 80,
                           height: 80,
                           objectFit: 'contain',
+                          borderRadius: '50%',
                           marginBottom: 8,
                           filter: unlocked ? 'none' : 'grayscale(100%) opacity(0.4)',
                         }}
@@ -86,11 +89,11 @@ export default function Badges() {
                     <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 2, color: '#1A3418' }}>
                       {badge.name}
                     </div>
-                    <div style={{ fontSize: 11, color: '#888', lineHeight: 1.4 }}>
+                  <div style={{ fontSize: 11, color: '#888', lineHeight: 1.4 }}>
                       {badge.description}
                     </div>
                     {unlocked && (
-                    <div style={{ fontSize: 10, color: '#26562F', fontWeight: 700, marginTop: 6 }}>
+                      <div style={{ fontSize: 10, color: '#26562F', fontWeight: 700, marginTop: 6 }}>
                         UPPLAST
                       </div>
                     )}
