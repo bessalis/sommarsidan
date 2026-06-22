@@ -1,5 +1,6 @@
 import NavBar from '../components/NavBar'
 import { supabase } from '../lib/supabase'
+import { checkAndAwardBadges } from '../lib/badges'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import heroBild from '../assets/hero.png'
@@ -60,6 +61,7 @@ export default function LoggaLasning() {
           current_page: (member.current_page || 0) + pages,
         }).eq('id', selectedMember)
       }
+      await checkAndAwardBadges(selectedMember)
       navigate('/')
     }
     setSaving(false)
