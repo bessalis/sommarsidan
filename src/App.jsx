@@ -4,6 +4,7 @@ import Bocker from './pages/Bocker'
 import LoggaLasning from './pages/LoggaLasning'
 import Badges from './pages/Badges'
 import BokDetalj from './pages/BokDetalj'
+import Recension from './pages/Recension'
 
 function App() {
   return (

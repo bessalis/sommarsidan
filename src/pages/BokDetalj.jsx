@@ -140,7 +140,7 @@ export default function BokDetalj() {
 
       {/* Skriv recension-knapp */}
       <div style={{ padding: '1.5rem' }}>
-        <button style={{
+        <button onClick={() => navigate('/recension/' + id)} style={{
           width: '100%',
           background: 'none',
           border: '2px solid #26562F',
