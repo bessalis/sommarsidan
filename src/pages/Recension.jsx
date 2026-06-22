@@ -94,7 +94,7 @@ export default function Recension() {
           <div key={q.id} style={{ marginBottom: 24 }}>
             <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>{q.question_text}</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {options.map((opt, i) => (
+              {(q.options || []).map((opt, i) => (
                 <div key={i} onClick={() => setAnswers(prev => ({ ...prev, [q.id]: opt }))} style={{
                   background: answers[q.id] === opt ? '#26562F' : '#F8F2DF',
                   color: answers[q.id] === opt ? 'white' : '#1a1a1a',

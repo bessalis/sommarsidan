@@ -15,6 +15,7 @@ function App() {
         <Route path="/logga" element={<LoggaLasning />} />
         <Route path="/badges" element={<Badges />} />
         <Route path="/bok/:id" element={<BokDetalj />} />
+        <Route path="/recension/:bookId" element={<Recension />} />
       </Routes>
     </BrowserRouter>
   )
