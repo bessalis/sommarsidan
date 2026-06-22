@@ -2,6 +2,9 @@ import { supabase } from './supabase'
 
 const BADGE_IDS = {
   friluftslasare: 'b763b8da-51c1-478d-9995-8291dcb474de',
+  sandlasare: 'a207fd32-3730-4d3f-bc5f-e1561308f8d5',
+  hangmattesmastare: '0d2811a4-8dc9-4f11-b3fd-4ad84c18a31a',
+  eldssjal: '4a24fd58-f390-4191-b8a1-254cc5e7354d',
   vaglasare: '4c2d9768-fca6-4137-badf-bb68747753b6',
   igang: '252dbfbf-acf0-456a-a414-beddb9ed3e00',
   femtiosidaren: '3619ce79-6be9-40b8-9b13-8d96f7ded34c',
@@ -72,4 +75,7 @@ export async function checkAndAwardBadges(familyMemberId) {
   const locations = logs.map(l => l.location_type)
   if (locations.includes('utomhus')) await awardBadge(familyMemberId, BADGE_IDS.friluftslasare)
   if (locations.includes('bil')) await awardBadge(familyMemberId, BADGE_IDS.vaglasare)
+  if (locations.includes('strand')) await awardBadge(familyMemberId, BADGE_IDS.sandlasare)
+  if (locations.includes('hangmatta')) await awardBadge(familyMemberId, BADGE_IDS.hangmattesmastare)
+  if (locations.includes('lagereld')) await awardBadge(familyMemberId, BADGE_IDS.eldssjal)
 }

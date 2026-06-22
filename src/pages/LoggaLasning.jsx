@@ -33,6 +33,9 @@ export default function LoggaLasning() {
     { key: 'hemma', label: 'Hemma', emoji: '🏠' },
     { key: 'bil', label: 'I bilen', emoji: '🚗' },
     { key: 'utomhus', label: 'Utomhus', emoji: '🌿' },
+    { key: 'strand', label: 'Stranden', emoji: '🏖️' },
+    { key: 'hangmatta', label: 'Hängmatta', emoji: '🪢' },
+    { key: 'lagereld', label: 'Lägereld', emoji: '🔥' },
     { key: 'annat', label: 'Annat', emoji: '✨' },
   ]
 
