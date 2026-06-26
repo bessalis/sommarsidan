@@ -53,24 +53,25 @@ export default function Bocker() {
     setFetching(true)
     setBookPreview(null)
     try {
-      const res = await fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`)
-      const data = await res.json()
-      const key = `ISBN:${isbn}`
-      if (data[key]) {
-        const book = data[key]
-        setBookPreview({
-          title: book.title || '',
-          author: book.authors?.[0]?.name || '',
-          cover_url: book.cover?.large || book.cover?.medium || '',
-          total_pages: book.number_of_pages || '',
-          description: book.subjects?.[0]?.name || '',
-        })
-        if (book.number_of_pages) setTotalPages(String(book.number_of_pages))
-      } else {
-        alert('Hittade ingen bok med det ISBN-numret. Prova igen!')
+      let title = '', author = '', description = ''
+      const cover_url = `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`
+
+      const librisRes = await fetch(`https://libris.kb.se/xsearch?query=isbn:${isbn}&format=json`)
+      const librisData = await librisRes.json()
+      const librisBook = librisData?.xsearch?.list?.[0]
+
+      if (librisBook) {
+        title = librisBook.title || ''
+        author = librisBook.creator || ''
       }
-    } catch {
-      alert('Något gick fel vid sökningen.')
+
+      if (title) {
+        setBookPreview({ title, author, cover_url, total_pages: '', description })
+      } else {
+        setBookPreview({ title: '', author: '', cover_url: '', total_pages: '', description: '' })
+      }
+    } catch (e) {
+      alert('Nagot gick fel: ' + e.message)
     }
     setFetching(false)
   }
@@ -297,20 +298,36 @@ export default function Bocker() {
                   gap: 12,
                   marginBottom: 16,
                 }}>
-                  {bookPreview.cover_url ? (
-                    <img
+                  <img
                       src={bookPreview.cover_url}
                       alt={bookPreview.title}
+                      onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='flex' }}
                       style={{ width: 60, height: 80, objectFit: 'cover', borderRadius: 8 }}
                     />
-                  ) : (
-                    <div style={{ width: 60, height: 80, background: '#eee', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24 }}>📖</div>
-                  )}
+                    <div style={{ width: 60, height: 80, background: '#eee', borderRadius: 8, display: 'none', alignItems: 'center', justifyContent: 'center', fontSize: 24 }}>📖</div>
                   <div>
                     <div style={{ fontWeight: 700, fontSize: 16 }}>{bookPreview.title}</div>
                     <div style={{ color: '#888', fontSize: 13, marginTop: 4 }}>{bookPreview.author}</div>
                   </div>
                 </div>
+                <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 6 }}>Bild-URL (valfritt)</div>
+                <input
+                  type="text"
+                  placeholder="Klistra in bild-URL fran t.ex. Adlibris"
+                  value={bookPreview.cover_url}
+                  onChange={e => setBookPreview(prev => ({ ...prev, cover_url: e.target.value }))}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    borderRadius: 12,
+                    border: 'none',
+                    fontSize: 13,
+                    background: '#fff',
+                    outline: 'none',
+                    boxSizing: 'border-box',
+                    marginBottom: 16,
+                  }}
+                />
 
                 {/* Antal sidor */}
                 <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>Antal sidor</div>
