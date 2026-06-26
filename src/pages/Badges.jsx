@@ -21,19 +21,36 @@ const CATEGORY_LABELS = {
 
 export default function Badges() {
   const [badges, setBadges] = useState([])
+  const [members, setMembers] = useState([])
+  const [selectedMember, setSelectedMember] = useState(null)
   const [unlockedIds, setUnlockedIds] = useState(new Set())
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchData() {
       const { data: allBadges } = await supabase.from('badges').select('*').order('category')
-      const { data: userBadges } = await supabase.from('user_badges').select('badge_id')
       if (allBadges) setBadges(allBadges)
-      if (userBadges) setUnlockedIds(new Set(userBadges.map(b => b.badge_id)))
+      const { data: m } = await supabase.from('family_members').select('*')
+      if (m) setMembers(m)
       setLoading(false)
     }
     fetchData()
   }, [])
+
+  useEffect(() => {
+    async function fetchUnlocked() {
+      if (!selectedMember) {
+        setUnlockedIds(new Set())
+        return
+      }
+      const { data: userBadges } = await supabase
+        .from('user_badges')
+        .select('badge_id')
+        .eq('family_member_id', selectedMember)
+      if (userBadges) setUnlockedIds(new Set(userBadges.map(b => b.badge_id)))
+    }
+    fetchUnlocked()
+  }, [selectedMember])
 
   const grouped = badges.reduce((acc, badge) => {
     const cat = badge.category || 'ovrigt'
@@ -47,12 +64,34 @@ export default function Badges() {
   return (
     <div style={{ background: '#F2ECD7', minHeight: '100vh', paddingBottom: 100 }}>
       <div style={{ padding: '1.5rem 1rem 0' }}>
-        <div style={{ fontFamily: 'Slang, Georgia, serif', fontSize: 36, color: '#26562F', marginBottom: 4 }}>
+        <div style={{ fontFamily: 'Slang, Georgia, serif', fontSize: 36, color: '#26562F', marginBottom: 16 }}>
           Bragder
         </div>
-        <div style={{ fontSize: 13, color: '#888', marginBottom: 24 }}>
-          {unlockedIds.size} av {badges.length} upplasta
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 24 }}>
+          {members.map(m => (
+            <div key={m.id} onClick={() => setSelectedMember(m.id)} style={{
+              background: selectedMember === m.id ? '#26562F' : '#F8F2DF',
+              color: selectedMember === m.id ? 'white' : '#1a1a1a',
+              borderRadius: 12,
+              padding: '0.75rem 0.5rem',
+              textAlign: 'center',
+              cursor: 'pointer',
+              border: '2px solid',
+              borderColor: selectedMember === m.id ? '#26562F' : 'transparent',
+            }}>
+              <div style={{ fontSize: 22 }}>{m.emoji}</div>
+              <div style={{ fontSize: 12, fontWeight: 600, marginTop: 4 }}>{m.name}</div>
+            </div>
+          ))}
         </div>
+
+        {selectedMember && (
+          <div style={{ fontSize: 13, color: '#888', marginBottom: 24 }}>
+            {unlockedIds.size} av {badges.length} upplasta
+          </div>
+        )}
+
         {Object.entries(grouped).map(([category, items]) => (
           <div key={category} style={{ marginBottom: 28 }}>
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, color: '#888', marginBottom: 12 }}>
@@ -71,32 +110,25 @@ export default function Badges() {
                     border: unlocked ? '2px solid #26562F' : '2px solid transparent',
                   }}>
                     {img ? (
-                      <img
-                        src={img}
-                        alt={badge.name}
-                        style={{
-                          width: 80,
-                          height: 80,
-                          objectFit: 'contain',
-                          borderRadius: '50%',
-                          marginBottom: 8,
-                          filter: unlocked ? 'none' : 'grayscale(100%) opacity(0.4)',
-                        }}
-                      />
+                      <div style={{
+                        width: 80,
+                        height: 80,
+                        borderRadius: '50%',
+                        overflow: 'hidden',
+                        margin: '0 auto 8px',
+                        filter: unlocked ? 'none' : 'grayscale(100%) opacity(0.4)',
+                      }}>
+                        <img src={img} alt={badge.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </div>
                     ) : (
                       <div style={{ fontSize: 40, marginBottom: 8 }}>🏅</div>
                     )}
                     <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 2, color: '#1A3418' }}>
                       {badge.name}
                     </div>
-                  <div style={{ fontSize: 11, color: '#888', lineHeight: 1.4 }}>
+                    <div style={{ fontSize: 11, color: '#888', leHeight: 1.4 }}>
                       {badge.description}
                     </div>
-                    {unlocked && (
-                      <div style={{ fontSize: 10, color: '#26562F', fontWeight: 700, marginTop: 6 }}>
-                        UPPLAST
-                      </div>
-                    )}
                   </div>
                 )
               })}
