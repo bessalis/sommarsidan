@@ -2,16 +2,29 @@ import { supabase } from './supabase'
 
 const BADGE_IDS = {
   friluftslasare: 'b763b8da-51c1-478d-9995-8291dcb474de',
+  vaglasare: '4c2d9768-fca6-4137-badf-bb68747753b6',
   sandlasare: 'a207fd32-3730-4d3f-bc5f-e1561308f8d5',
   hangmattesmastare: '0d2811a4-8dc9-4f11-b3fd-4ad84c18a31a',
   eldssjal: '4a24fd58-f390-4191-b8a1-254cc5e7354d',
-  vaglasare: '4c2d9768-fca6-4137-badf-bb68747753b6',
   igang: '252dbfbf-acf0-456a-a414-beddb9ed3e00',
   femtiosidaren: '3619ce79-6be9-40b8-9b13-8d96f7ded34c',
   hundrasidaren: '66534bc4-61d6-4931-bddf-29d5e34adb3d',
   sidodrottning: 'cb4f8748-6ecc-4d46-89d2-5cdbd7843cd0',
   treIRad: '60acae29-9a1a-489f-8fbe-80075370f4eb',
   maratonlasare: '0e538f1e-c9ef-4b7e-857d-79835e88bf59',
+  platsproffs: 'aa04d0b2-a32f-48d1-a0d0-50aa84b79d57',
+  jarnlasare: 'fb69b813-6d25-4edb-8605-6cfc7e2772d3',
+  bokmal: '2ffdb12d-e5f0-4488-bcc6-aa0eda083ebf',
+  kritikerrosten: 'ae46896d-8116-4197-88e9-bd68d75ccfbe',
+  sommarbarn: 'f303b08a-e21a-46e7-bbd7-feb1f09aac52',
+}
+
+const BINGO_RULES = {
+  platsproffs: { category: 'plats', needed: 3, badge: 'platsproffs' },
+  jarnlasare: { category: 'uthallighet', needed: 3, badge: 'jarnlasare' },
+  bokmal: { category: 'bocker', needed: 3, badge: 'bokmal' },
+  kritikerrosten: { category: 'engagemang', needed: 3, badge: 'kritikerrosten' },
+  sommarbarn: { category: 'sommar', needed: 3, badge: 'sommarbarn' },
 }
 
 async function awardBadge(familyMemberId, badgeId) {
@@ -78,4 +91,26 @@ export async function checkAndAwardBadges(familyMemberId) {
   if (locations.includes('strand')) await awardBadge(familyMemberId, BADGE_IDS.sandlasare)
   if (locations.includes('hangmatta')) await awardBadge(familyMemberId, BADGE_IDS.hangmattesmastare)
   if (locations.includes('lagereld')) await awardBadge(familyMemberId, BADGE_IDS.eldssjal)
+
+  const { data: allBadges } = await supabase.from('badges').select('id, category')
+  const { data: earnedBadges } = await supabase
+    .from('user_badges')
+    .select('badge_id')
+    .eq('family_member_id', familyMemberId)
+
+  if (allBadges && earnedBadges) {
+    const earnedIds = new Set(earnedBadges.map(b => b.badge_id))
+    const countByCategory = {}
+    allBadges.forEach(b => {
+      if (earnedIds.has(b.id) && b.category !== 'bingo') {
+        countByCategory[b.category] = (countByCategory[b.category] || 0) + 1
+      }
+    })
+
+    for (const rule of Object.values(BINGO_RULES)) {
+      if ((countByCategory[rule.category] || 0) >= rule.needed) {
+        await awardBadge(familyMemberId, BADGE_IDS[rule.badge])
+      }
+    }
+  }
 }
